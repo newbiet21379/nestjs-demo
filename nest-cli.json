@@ -5,7 +5,16 @@
   "root": "apps/gateway",
   "compilerOptions": {
     "webpack": true,
-    "tsConfigPath": "apps/gateway/tsconfig.app.json"
+    "tsConfigPath": "apps/gateway/tsconfig.app.json",
+    "plugins": [
+      {
+        "name": "@nestjs/graphql",
+        "options": {
+          "typeFileNameSuffix": [".input.ts", ".args.ts"],
+          "introspectComments": true
+        }
+      }
+    ]
   },
   "projects": {
     "gateway": {
@@ -26,15 +35,6 @@
         "tsConfigPath": "apps/service-user/tsconfig.app.json"
       }
     },
-    "service-account": {
-      "type": "application",
-      "root": "apps/service-account",
-      "entryFile": "main",
-      "sourceRoot": "apps/service-account/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/service-account/tsconfig.app.json"
-      }
-    },
     "common": {
       "type": "library",
       "root": "libs/common",
@@ -42,6 +42,15 @@
       "sourceRoot": "libs/common/src",
       "compilerOptions": {
         "tsConfigPath": "libs/common/tsconfig.lib.json"
+      }
+    },
+    "service-orders": {
+      "type": "application",
+      "root": "apps/service-orders",
+      "entryFile": "main",
+      "sourceRoot": "apps/service-orders/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/service-orders/tsconfig.app.json"
       }
     }
   }

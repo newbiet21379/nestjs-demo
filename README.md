@@ -26,37 +26,7 @@ npm install
 
 ## Usage
 
-### Start MySQL
 
-Start MySQL docker instance.
-
-```bash
-docker run -d -e "MYSQL_ROOT_PASSWORD=Admin12345" -e "MYSQL_USER=usr" -e "MYSQL_PASSWORD=User12345" -e "MYSQL_DATABASE=development" -e "MYSQL_AUTHENTICATION_PLUGIN=mysql_native_password" -p 3306:3306 --name some-mysql bitnami/mysql:8.0.19
-```
-
-Connect using MySQL docker instance command line.
-
-```bash
-docker exec -it some-mysql mysql -uroot -p"Admin12345"
-```
-
-Create the Databases for testing
-
-```sql
-CREATE DATABASE service_user;
-GRANT ALL PRIVILEGES ON service_user.* TO 'usr'@'%';
-
-CREATE DATABASE service_account;
-GRANT ALL PRIVILEGES ON service_account.* TO 'usr'@'%';
-FLUSH PRIVILEGES;
-```
-
-Clean-up all data if need to re-testing again
-
-```sql
-DELETE FROM service_account.ACCOUNT;
-DELETE FROM service_user.USER;
-```
 
 ### Start EventStore
 
@@ -81,14 +51,8 @@ curl -L -X PUT "http://localhost:2113/subscriptions/%24svc-account/user" \
 ### Start the microservices
 
 ```bash
-# Start the user service
-nest start service-user
-
-# Start the account service
-nest start service-account
-
 # start the gateway
-nest start gateway
+nest start
 ```
 
 ## Testing

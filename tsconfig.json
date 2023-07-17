@@ -11,10 +11,10 @@
     "baseUrl": "./",
     "incremental": true,
     "paths": {
-      "@hardyscc/common": [
+      "@libs/common": [
         "libs/common/src"
       ],
-      "@hardyscc/common/*": [
+      "@libs/common/*": [
         "libs/common/src/*"
       ]
     }

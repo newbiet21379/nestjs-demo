@@ -1,0 +1,14 @@
+node_modules
+.vscode
+.git*
+Dockerfile*
+*.yml
+dist
+*.yaml
+helm
+database
+*.md
+.env*
+.eslintrc.js
+*ignore
+.aws

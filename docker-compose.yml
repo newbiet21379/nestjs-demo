@@ -1,0 +1,57 @@
+version: "3.7"
+
+services:
+  proxy:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    command: [nginx-debug, '-g', 'daemon off;']
+
+  nest:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: always
+    environment:
+      - AWS_REGION=ap-northeast-2
+      - AWS_ENDPOINT=http://localstack:4566
+      - AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY
+      - AWS_SQS_QUEUE_URL=http://localhost:4566/000000000000/example
+      - DATABASE_LOGGING=true
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=users
+      - DATABASE_USER=user
+      - DATABASE_PASSWORD=password
+      - DATABASE_SYNC=true
+      - PORT=3000
+    volumes:
+      - ./src:/app/src:ro
+      - ./libs:/app/libs:ro
+
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      PGDATA: /data/postgres
+    volumes:
+      - ./database/nest:/data/postgres
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  localstack:
+    image: localstack/localstack
+    ports:
+      - 4566:4566
+    environment:
+      - SERVICES=ses,sqs,sns
+      - AWS_DEFAULT_REGION=ap-northeast-2
+    volumes:
+      - ./.aws:/docker-entrypoint-initaws.d:ro

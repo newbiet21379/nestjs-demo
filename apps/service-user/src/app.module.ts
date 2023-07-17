@@ -1,41 +1,42 @@
-import { EventStoreModule } from '@juicycleff/nestjs-event-store';
 import { Module } from '@nestjs/common';
-import { GraphQLFederationModule } from '@nestjs/graphql';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './user/model/user.model';
-import { UserModule } from './user/user.module';
+import { CqrsModule } from '@nestjs/cqrs';
+import { SlonikModule } from 'nestjs-slonik';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { RequestContextModule } from 'nestjs-request-context';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { postgresConnectionUri } from './database/database.config';
+import { GraphQLModule } from '@nestjs/graphql';
+import {ContextInterceptor} from "@libs/common/application/context/ContextInterceptor";
+import {ExceptionInterceptor} from "@libs/common/application/interceptors/exception.interceptor";
+import {UserModule} from "./user.module";
+import {ApolloFederationDriver, ApolloFederationDriverConfig} from "@nestjs/apollo";
 
-const databaseUrl =
-  process.env.DATABASE_URL ||
-  'mysql://usr:User12345@localhost:3306/service_user';
+const interceptors = [
+  {
+    provide: APP_INTERCEPTOR,
+    useClass: ContextInterceptor,
+  },
+  {
+    provide: APP_INTERCEPTOR,
+    useClass: ExceptionInterceptor,
+  },
+];
 
 @Module({
   imports: [
-    GraphQLFederationModule.forRoot({
+    EventEmitterModule.forRoot(),
+    RequestContextModule,
+    SlonikModule.forRoot({
+      connectionUri: postgresConnectionUri,
+    }),
+    CqrsModule,
+    GraphQLModule.forRoot<ApolloFederationDriverConfig>({
+      driver: ApolloFederationDriver,
       autoSchemaFile: true,
-    }),
-    EventStoreModule.register({
-      type: 'event-store',
-      tcpEndpoint: {
-        host: 'localhost',
-        port: 1113,
-      },
-      options: {
-        defaultUserCredentials: {
-          username: 'admin',
-          password: 'changeit',
-        },
-      },
-    }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      url: databaseUrl,
-      database: databaseUrl.split('/').pop(),
-      entities: [User],
-      synchronize: true,
-      logging: true,
     }),
     UserModule,
   ],
+  controllers: [],
+  providers: [...interceptors],
 })
 export class AppModule {}
