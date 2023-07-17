@@ -22,11 +22,11 @@ services:
       - AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY
       - AWS_SQS_QUEUE_URL=http://localhost:4566/000000000000/example
       - DATABASE_LOGGING=true
-      - DATABASE_HOST=postgres
-      - DATABASE_PORT=5432
-      - DATABASE_NAME=users
-      - DATABASE_USER=user
-      - DATABASE_PASSWORD=password
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=nest
+      - DB_USER=user
+      - DB_PASSWORD=password
       - DATABASE_SYNC=true
       - PORT=3000
     volumes:
@@ -41,7 +41,8 @@ services:
       POSTGRES_PASSWORD: password
       PGDATA: /data/postgres
     volumes:
-      - ./database/nest:/data/postgres
+      - ./data/postgres:/data/postgres
+      - ./db/init.sql:/docker-entrypoint-initdb.d/10-init.sql
     ports:
       - "5432:5432"
     restart: unless-stopped

@@ -15,6 +15,8 @@ async function bootstrap() {
 
   app.enableShutdownHooks();
 
-  await app.listen(4001);
+  await app.listen(4001, () => {
+    console.log("running on port: 4001")
+  });
 }
 bootstrap();

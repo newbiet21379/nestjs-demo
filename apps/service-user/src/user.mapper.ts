@@ -20,11 +20,11 @@ export class UserMapper
     const copy = entity.getProps();
     const record: UserModel = {
       id: copy.id,
-      createdAt: copy.createdAt,
-      updatedAt: copy.updatedAt,
+      created_at: copy.createdAt,
+      updated_at: copy.updatedAt,
       email: copy.email,
       country: copy.address.country,
-      postalCode: copy.address.postalCode,
+      postal_code: copy.address.postalCode,
       street: copy.address.street,
       role: copy.role,
     };
@@ -34,14 +34,14 @@ export class UserMapper
   toDomain(record: UserModel): UserEntity {
     const entity = new UserEntity({
       id: record.id,
-      createdAt: new Date(record.createdAt),
-      updatedAt: new Date(record.updatedAt),
+      createdAt: new Date(record.created_at),
+      updatedAt: new Date(record.updated_at),
       props: {
         email: record.email,
         role: record.role,
         address: new Address({
           street: record.street,
-          postalCode: record.postalCode,
+          postalCode: record.postal_code,
           country: record.country,
         }),
       },

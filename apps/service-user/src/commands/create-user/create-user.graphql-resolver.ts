@@ -6,10 +6,9 @@ import { IdGqlResponse } from './dtos/id.gql-response.dto';
 import { Result } from 'oxide.ts';
 import {AggregateID} from "@libs/common/ddd";
 import {UserAlreadyExistsError} from "../../domain/user.errors";
-import {UserEntity} from "../../domain/user.entity";
 
 // If you are Using GraphQL you'll need a Resolver instead of a Controller
-@Resolver((of) => UserEntity)
+@Resolver()
 export class CreateUserGraphqlResolver {
   constructor(private readonly commandBus: CommandBus) {}
 

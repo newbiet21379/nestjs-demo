@@ -1,9 +1,11 @@
-import { config } from 'dotenv';
-import * as path from 'path';
+import {Injectable} from "@nestjs/common";
+import {ConfigService} from "@nestjs/config";
 
-// Initializing dotenv
-const envPath: string = path.resolve(
-  __dirname,
-  process.env.NODE_ENV === 'test' ? '../../../.env.test' : '../../../../.env',
-);
-config({ path: envPath });
+@Injectable()
+export class ApiConfigService {
+    constructor(private configService: ConfigService) {}
+
+    get isAuthEnabled(): boolean {
+        return this.configService.get('AUTH_ENABLED') === 'true';
+    }
+}
