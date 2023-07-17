@@ -16,11 +16,11 @@ import {SqlRepositoryBase} from '@libs/common/db/sql-repository.base';
  */
 export const userSchema = z.object({
   id: z.string().uuid(),
-  createdAt: z.preprocess((val: any) => new Date(val), z.date()),
-  updatedAt: z.preprocess((val: any) => new Date(val), z.date()),
+  created_at: z.preprocess((val: any) => new Date(val), z.date()),
+  updated_at: z.preprocess((val: any) => new Date(val), z.date()),
   email: z.string().email(),
   country: z.string().min(1).max(255),
-  postalCode: z.string().min(1).max(20),
+  postal_code: z.string().min(1).max(20),
   street: z.string().min(1).max(255),
   role: z.nativeEnum(UserRoles),
 });

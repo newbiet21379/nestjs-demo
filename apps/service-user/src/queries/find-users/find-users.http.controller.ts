@@ -45,7 +45,7 @@ export class FindUsersHttpController {
         email: user.email,
         country: user.country,
         street: user.street,
-        postalCode: user.postalCode,
+        postalCode: user.postal_code,
       })),
     });
   }

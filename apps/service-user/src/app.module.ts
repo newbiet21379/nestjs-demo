@@ -4,12 +4,13 @@ import { SlonikModule } from 'nestjs-slonik';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { RequestContextModule } from 'nestjs-request-context';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { postgresConnectionUri } from './database/database.config';
 import { GraphQLModule } from '@nestjs/graphql';
 import {ContextInterceptor} from "@libs/common/application/context/ContextInterceptor";
 import {ExceptionInterceptor} from "@libs/common/application/interceptors/exception.interceptor";
 import {UserModule} from "./user.module";
-import {ApolloFederationDriver, ApolloFederationDriverConfig} from "@nestjs/apollo";
+import {ApolloDriver, ApolloDriverConfig} from "@nestjs/apollo";
+import {ConfigModule} from "@nestjs/config";
+import {postgresConnectionUri} from "@libs/common/configs/database.config";
 
 const interceptors = [
   {
@@ -27,14 +28,19 @@ const interceptors = [
     EventEmitterModule.forRoot(),
     RequestContextModule,
     SlonikModule.forRoot({
-      connectionUri: postgresConnectionUri,
+      connectionUri: postgresConnectionUri
     }),
     CqrsModule,
-    GraphQLModule.forRoot<ApolloFederationDriverConfig>({
-      driver: ApolloFederationDriver,
-      autoSchemaFile: true,
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: {
+        federation: 2
+      },
     }),
     UserModule,
+    ConfigModule.forRoot({
+      cache: true,
+    })
   ],
   controllers: [],
   providers: [...interceptors],

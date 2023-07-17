@@ -2,7 +2,8 @@
 /dist
 /node_modules
 
-# Logs
+/data/*
+
 logs
 *.log
 npm-debug.log*

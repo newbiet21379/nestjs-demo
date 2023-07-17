@@ -62,10 +62,9 @@ Goto GraphQL Playground - http://localhost:3000/graphql
 ### Create user with a default saving account
 
 ```graphql
-mutation {
-  createUser(input: { name: "John" }) {
+mutation{
+  create(input:{email:"demo@mail.com", country: "Adas", postalCode:"10000", street:"ASDasd"}){
     id
-    name
   }
 }
 ```

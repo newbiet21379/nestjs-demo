@@ -17,7 +17,10 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/gateway/test/jest-e2e.json"
+    "test:e2e": "jest --config ./apps/gateway/test/jest-e2e.json",
+    "migrate:create": "ts-node ./node_modules/typeorm/cli.js migration:create -o",
+    "migrate:up": "ts-node ./node_modules/typeorm/cli.js migration:run",
+    "migrate:down": "ts-node ./node_modules/typeorm/cli.js migration:revert"
   },
   "dependencies": {
     "@apollo/federation": "^0.38.1",
@@ -25,6 +28,7 @@
     "@apollo/subgraph": "^2.4.9",
     "@nestjs/apollo": "^10.1.3",
     "@nestjs/common": "^9.0.0",
+    "@nestjs/config": "^3.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/cqrs": "^9.0.1",
     "@nestjs/event-emitter": "^1.3.1",
@@ -32,12 +36,11 @@
     "@nestjs/microservices": "^9.1.2",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.1.2",
+    "@nestjs/typeorm": "^10.0.0",
     "apollo-server-core": "^3.10.2",
     "apollo-server-express": "^3.10.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
-    "dotenv": "^16.0.2",
-    "env-var": "^7.3.0",
     "graphql": "^16.6.0",
     "jest-cucumber": "^3.0.1",
     "nanoid": "^3.3.4",
@@ -50,6 +53,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "slonik": "^31.4.2",
+    "typeorm": "^0.3.17",
     "uuid": "^9.0.0",
     "zod": "^3.21.4"
   },

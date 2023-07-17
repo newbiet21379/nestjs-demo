@@ -8,9 +8,8 @@ import {PaginatedParams} from "@libs/common/ddd/query.base";
 import {Paginated} from "@libs/common/ddd";
 import {BaseResponseProps, ResponseBase} from "@libs/common/api/response.base";
 import {UserModel} from "../../database/user.repository";
-import {UserEntity} from "../../domain/user.entity";
 
-@Resolver(() => UserEntity)
+@Resolver()
 export class FindUsersGraphqlResolver {
   constructor(private readonly queryBus: QueryBus) {}
   @Query(() => UserPaginatedGraphqlResponseDto)
@@ -32,7 +31,7 @@ export class FindUsersGraphqlResolver {
         email: user.email,
         country: user.country,
         street: user.street,
-        postalCode: user.postalCode,
+        postalCode: user.postal_code,
       })),
     });
     return response;
