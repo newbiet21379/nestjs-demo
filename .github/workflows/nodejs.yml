@@ -29,7 +29,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm install
       - run: npm run lint
-      - run: npm run build service-user
+      - run: npm run build user
       - run: npm run build service-account
       - run: npm run build gateway
       - run: npm test -- --passWithNoTests
