@@ -82,7 +82,7 @@ You should see something like this
 1. Under `service-user` console
 
    ```sql
-   Async CreateUserHandler... CreateUserCommand
+   Async CreateUserHandler... CreateOrderCommand
    query: START TRANSACTION
    query: INSERT INTO `USER`(`id`, `name`, `nickName`, `status`) VALUES (?, ?, DEFAULT, DEFAULT) -- PARAMETERS: ["4d04689b-ef40-4a08-8a27-6fa420790ddb","John"]
    query: SELECT `User`.`id` AS `User_id`, `User`.`status` AS `User_status` FROM `USER` `User` WHERE `User`.`id` = ? -- PARAMETERS: ["4d04689b-ef40-4a08-8a27-6fa420790ddb"]

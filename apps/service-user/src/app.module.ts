@@ -10,7 +10,7 @@ import {ExceptionInterceptor} from "@libs/common/application/interceptors/except
 import {UserModule} from "./user.module";
 import {ApolloDriver, ApolloDriverConfig} from "@nestjs/apollo";
 import {ConfigModule} from "@nestjs/config";
-import {postgresConnectionUri} from "@libs/common/configs/database.config";
+import {postgresConnectionUri} from "@libs/common/configs/dotenv.config";
 
 const interceptors = [
   {
