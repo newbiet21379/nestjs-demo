@@ -1,5 +1,4 @@
-export enum InjectionToken {
-    EMAIL_ADAPTER = 'EmailAdapter',
-    NOTIFICATION_REPOSITORY = 'NotificationRepository',
-    NOTIFICATION_QUERY = 'NotificationQuery',
-}
+export const EMAIL_ADAPTER = Symbol('EmailAdapter');
+export const NOTIFICATION_REPOSITORY = Symbol('NotificationRepository');
+export const NOTIFICATION_QUERY = Symbol('NotificationQuery');
+

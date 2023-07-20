@@ -1,0 +1,6 @@
+FROM node:hydrogen-alpine
+COPY . /app
+COPY ../libs /app
+WORKDIR /app
+RUN npm ci
+ENTRYPOINT [ "npm", "run", "start:debug" ]

@@ -1,8 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { NotificationModule } from './notification.module';
+import {RmqService} from "@libs/common/rmq/rmq.service";
 
 async function bootstrap() {
   const app = await NestFactory.create(NotificationModule);
-  await app.listen(3000);
+  const rmqService = app.get<RmqService>(RmqService);
+  app.connectMicroservice(rmqService.getOptions('NOTIFICATION'))
+  await app.startAllMicroservices()
 }
 bootstrap();

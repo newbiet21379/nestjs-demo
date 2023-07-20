@@ -10,10 +10,32 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     command: [nginx-debug, '-g', 'daemon off;']
 
-  nest:
+  auth:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: apps/auth/Dockerfile.dev
+    restart: always
+    ports:
+      - 4001:4001
+    networks:
+      - backend
+    environment:
+      - DATABASE_LOGGING=true
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=account
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DATABASE_SYNC=true
+      - JWT_KEY=wE_c2Fh94HUwylk73tqkjUIKNPnBFMwnCq35F31Mv47Pl
+      - PORT=3000
+    volumes:
+      - ./src:/app/src:ro
+      - ./libs:/app/libs:ro
+  notification:
+    build:
+      context: .
+      dockerfile: apps/notification/Dockerfile.dev
     restart: always
     environment:
       - AWS_REGION=ap-northeast-2
@@ -24,7 +46,7 @@ services:
       - DATABASE_LOGGING=true
       - DB_HOST=postgres
       - DB_PORT=5432
-      - DB_NAME=nest
+      - DB_NAME=notification
       - DB_USER=user
       - DB_PASSWORD=password
       - DATABASE_SYNC=true
@@ -32,7 +54,44 @@ services:
     volumes:
       - ./src:/app/src:ro
       - ./libs:/app/libs:ro
-
+    depends_on:
+      - postgres
+  orders:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: always
+    environment:
+      - DATABASE_LOGGING=true
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=orders
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DATABASE_SYNC=true
+      - PORT=3000
+    volumes:
+      - ./src:/app/src:ro
+      - ./libs:/app/libs:ro
+    networks:
+      - backend
+    depends_on:
+      - postgres
+  gateway:
+    build:
+      context: .
+      dockerfile: ./apps/gateway/Dockerfile.dev
+    restart: always
+    ports:
+      - 3000:3000
+    volumes:
+      - ./src:/app/src:ro
+      - ./libs:/app/libs:ro
+    networks:
+      - backend
+    depends_on:
+      - auth
+      - orders
   postgres:
     container_name: postgres_container
     image: postgres
@@ -40,6 +99,8 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       PGDATA: /data/postgres
+    networks:
+      - backend
     volumes:
       - ./data/postgres:/data/postgres
       - ./db/initUser.sql:/docker-entrypoint-initdb.d/10-initUser.sql
@@ -51,8 +112,14 @@ services:
     image: localstack/localstack
     ports:
       - 4566:4566
+    networks:
+      - backend
     environment:
       - SERVICES=ses,sqs,sns
       - AWS_DEFAULT_REGION=ap-northeast-2
     volumes:
       - ./.aws:/docker-entrypoint-initaws.d:ro
+networks:
+  backend:
+    name: backend-bridge
+    driver: bridge

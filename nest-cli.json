@@ -74,22 +74,31 @@
         "tsConfigPath": "apps/notification/tsconfig.app.json"
       }
     },
-    "auth": {
+    "product": {
       "type": "application",
-      "root": "apps/auth",
+      "root": "apps/product",
       "entryFile": "main",
-      "sourceRoot": "apps/auth/src",
+      "sourceRoot": "apps/product/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/auth/tsconfig.app.json"
+        "tsConfigPath": "apps/product/tsconfig.app.json"
       }
     },
-    "notification": {
+    "wallet": {
       "type": "application",
-      "root": "apps/notification",
+      "root": "apps/wallet",
       "entryFile": "main",
-      "sourceRoot": "apps/notification/src",
+      "sourceRoot": "apps/wallet/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/notification/tsconfig.app.json"
+        "tsConfigPath": "apps/wallet/tsconfig.app.json"
+      }
+    },
+    "account": {
+      "type": "application",
+      "root": "apps/account",
+      "entryFile": "main",
+      "sourceRoot": "apps/account/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/account/tsconfig.app.json"
       }
     }
   }

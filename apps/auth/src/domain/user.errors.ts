@@ -9,3 +9,12 @@ export class UserAlreadyExistsError extends ExceptionBase {
     super(UserAlreadyExistsError.message, cause, metadata);
   }
 }
+
+export class AuthenticationError extends ExceptionBase {
+  readonly code = 'USER.AUTHENTICATION_FAILED';
+  static readonly message = 'Wrong email/password';
+
+  constructor(message = AuthenticationError.message) {
+    super(message);
+  }
+}

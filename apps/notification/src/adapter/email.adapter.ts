@@ -1,16 +1,17 @@
 import {SendEmailCommand, SESClient} from '@aws-sdk/client-ses';
 import {EmailAdapterPort} from "./email.adapter.port";
-import {Config} from "@libs/common/configs/dotenv.config";
-
-
+import {Inject} from "@nestjs/common";
+import {ConfigService} from "@nestjs/config";
 
 export class EmailAdapter implements EmailAdapterPort {
+    constructor(@Inject() protected readonly configService: ConfigService) {
+    }
     private readonly sesClient = new SESClient({
-        region: Config.AWS_REGION,
-        endpoint: Config.AWS_ENDPOINT,
+        region: this.configService.get('AWS_REGION'),
+        endpoint: this.configService.get('AWS_ENDPOINT'),
         credentials: {
-            accessKeyId: Config.AWS_ACCESS_KEY_ID,
-            secretAccessKey: Config.AWS_SECRET_ACCESS_KEY,
+            accessKeyId: this.configService.get('AWS_ACCESS_KEY_ID'),
+            secretAccessKey: this.configService.get('AWS_SECRET_ACCESS_KEY'),
         },
     });
 
@@ -18,7 +19,7 @@ export class EmailAdapter implements EmailAdapterPort {
         await this.sesClient.send(
             new SendEmailCommand({
                 Destination: {ToAddresses: [to]},
-                Source: Config.EMAIL,
+                Source: this.configService.get('EMAIL'),
                 Message: {
                     Subject: {Data: subject, Charset: 'UTF-8'},
                     Body: {Text: {Data: text, Charset: 'UTF-8'}},

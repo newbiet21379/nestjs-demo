@@ -44,6 +44,7 @@ export class UserMapper
           postalCode: record.postal_code,
           country: record.country,
         }),
+        password: record.password
       },
     });
     return entity;

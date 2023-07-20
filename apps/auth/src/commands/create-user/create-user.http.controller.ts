@@ -15,7 +15,7 @@ import {IdResponse} from "@libs/common/api/id.response.dto";
 import {UserAlreadyExistsError} from "../../domain/user.errors";
 import {ApiErrorResponse} from "@libs/common/api/api-error.response";
 import {AggregateID} from "@libs/common/ddd";
-import {Auth} from "../../auth.guard";
+import {Public} from "@libs/common/api/global.routes";
 
 
 @Controller(routesV1.version)
@@ -36,7 +36,7 @@ export class CreateUserHttpController {
     status: HttpStatus.BAD_REQUEST,
     type: ApiErrorResponse,
   })
-  @Auth()
+  @Public()
   @Post(routesV1.user.root)
   async create(@Body() body: CreateUserRequestDto): Promise<IdResponse> {
     const command = new CreateUserCommand(body);
