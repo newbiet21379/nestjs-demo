@@ -9,10 +9,10 @@ import {ContextInterceptor} from "@libs/common/application/context/ContextInterc
 import {ExceptionInterceptor} from "@libs/common/application/interceptors/exception.interceptor";
 import {UserModule} from "./user.module";
 import {ApolloDriver, ApolloDriverConfig} from "@nestjs/apollo";
-import {ConfigModule} from "@nestjs/config";
-import {Config} from "@libs/common/configs/dotenv.config";
+import {ConfigModule, ConfigService} from "@nestjs/config";
 import {JwtModule} from "@nestjs/jwt";
 import {AuthGuard} from "./auth.guard";
+import {z} from "zod";
 
 const interceptors = [
   {
@@ -33,8 +33,11 @@ const interceptors = [
   imports: [
     EventEmitterModule.forRoot(),
     RequestContextModule,
-    SlonikModule.forRoot({
-      connectionUri: `postgres://${Config.DATABASE_USER}:${Config.DATABASE_PASSWORD}@${Config.DATABASE_HOST}/${Config.DATABASE_NAME}`
+    SlonikModule.forRootAsync({
+      useFactory: (configService: ConfigService) => ({
+        connectionUri: `postgres://${configService.get('DB_USER')}:${configService.get('DB_PASSWORD')}@${configService.get('DB_HOST')}/${configService.getOrThrow('DB_NAME')}`
+      }),
+      inject: [ConfigService]
     }),
     CqrsModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -43,10 +46,30 @@ const interceptors = [
         federation: 2
       },
     }),
-    JwtModule.register({
-      global: true,
-      secret: Config.JWT_CONSTANT,
-      signOptions: { expiresIn: '60s' },
+      ConfigModule.forRoot({
+        isGlobal: true,
+        validationSchema: z.object({
+          DATABASE_LOGGING: z.string().nonempty(),
+          DB_HOST: z.string().nonempty(),
+          DB_PORT: z.string().nonempty(),
+          DB_NAME: z.string().nonempty(),
+          DB_USER: z.string().nonempty(),
+          DB_PASSWORD: z.string().nonempty(),
+          DATA_SYNC: z.string(),
+          JWT_KEY: z.string().nonempty(),
+          PORT: z.string().nonempty()
+        }),
+        // validate,
+        envFilePath: './apps/auth/.env',
+        cache: true,
+      }),
+    JwtModule.registerAsync({
+      useFactory: (configService: ConfigService) => ({
+        global: true,
+        secret: configService.get<string>('JWT_KEY'),
+        signOptions: { expiresIn: '60s' },
+      }),
+      inject: [ConfigService]
     }),
     UserModule,
     ConfigModule.forRoot({

@@ -80,7 +80,7 @@ services:
   gateway:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: ./apps/gateway/Dockerfile.dev
     restart: always
     ports:
       - 3000:3000

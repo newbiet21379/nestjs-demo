@@ -6,8 +6,8 @@ import {DeleteMessageCommand, ReceiveMessageCommand, SendMessageCommand, SQSClie
 import {CreateTopicCommand, PublishCommand, SNSClient,} from '@aws-sdk/client-sns';
 import {Interval} from '@nestjs/schedule';
 
-import {Config} from "@libs/common/configs/dotenv.config";
 import {RequestStorage} from "@libs/common/application/context/RequestStorage";
+import {ConfigModule, ConfigService} from "@nestjs/config";
 
 
 type Message = Readonly<{ name: string; body: IEvent; requestId: string }>;
@@ -19,14 +19,17 @@ export const MessageHandler = (name: string) =>
 
 class SQSConsumerService implements OnModuleDestroy {
     private readonly logger = new Logger(SQSConsumerService.name);
-    @Inject() private readonly discover: DiscoveryService;
-    @Inject() private readonly modulesContainer: ModulesContainer;
+    constructor(@Inject() protected readonly discover: DiscoveryService,
+                @Inject() protected readonly modulesContainer: ModulesContainer,
+                @Inject() protected readonly configService: ConfigService,
+                ) {
+    }
     private readonly sqsClient = new SQSClient({
-        region: Config.AWS_REGION,
-        endpoint: Config.AWS_ENDPOINT,
+        region: this.configService.get('AWS_REGION'),
+        endpoint: this.configService.get('AWS_ENDPOINT'),
         credentials: {
-            accessKeyId: Config.AWS_ACCESS_KEY_ID,
-            secretAccessKey: Config.AWS_SECRET_ACCESS_KEY,
+            accessKeyId: this.configService.get('AWS_ACCESS_KEY_ID'),
+            secretAccessKey: this.configService.get('AWS_SECRET_ACCESS_KEY'),
         },
     });
 
@@ -36,7 +39,7 @@ class SQSConsumerService implements OnModuleDestroy {
         const response = (
             await this.sqsClient.send(
                 new ReceiveMessageCommand({
-                    QueueUrl: Config.AWS_SQS_QUEUE_URL,
+                    QueueUrl: this.configService.get('AWS_SQS_QUEUE_URL'),
                     AttributeNames: ['All'],
                     MessageAttributeNames: ['All'],
                     MaxNumberOfMessages: 1,
@@ -83,7 +86,7 @@ class SQSConsumerService implements OnModuleDestroy {
             );
             await this.sqsClient.send(
                 new DeleteMessageCommand({
-                    QueueUrl: Config.AWS_SQS_QUEUE_URL,
+                    QueueUrl: this.configService.get('AWS_SQS_QUEUE_URL'),
                     ReceiptHandle: response[0].ReceiptHandle,
                 }),
             );
@@ -136,12 +139,14 @@ export class AccountWithdrawn {
 }
 
 class SNSMessagePublisher {
+    constructor(@Inject() protected readonly configService: ConfigService) {
+    }
     private readonly snsClient = new SNSClient({
-        region: Config.AWS_REGION,
-        endpoint: Config.AWS_ENDPOINT,
+        region: this.configService.get('AWS_REGION'),
+        endpoint: this.configService.get('AWS_ENDPOINT'),
         credentials: {
-            accessKeyId: Config.AWS_ACCESS_KEY_ID,
-            secretAccessKey: Config.AWS_SECRET_ACCESS_KEY,
+            accessKeyId: this.configService.get('AWS_ACCESS_KEY_ID'),
+            secretAccessKey: this.configService.get('AWS_SECRET_ACCESS_KEY'),
         },
     });
     private readonly logger = new Logger(SNSMessagePublisher.name);
@@ -176,16 +181,18 @@ class IntegrationEventPublisherImplement implements IntegrationEventPublisher {
 export const INTEGRATION_EVENT_PUBLISHER = 'IntegrationEventPublisher';
 
 class SQSMessagePublisher {
+    constructor(@Inject() protected readonly configService: ConfigService) {
+    }
     private readonly sqsClient = new SQSClient({
-        region: Config.AWS_REGION,
-        endpoint: Config.AWS_ENDPOINT,
+        region: this.configService.get('AWS_REGION'),
+        endpoint: this.configService.get('AWS_ENDPOINT')
     });
     private readonly logger = new Logger(SQSMessagePublisher.name);
 
     async publish(message: Message): Promise<void> {
         await this.sqsClient.send(
             new SendMessageCommand({
-                QueueUrl: Config.AWS_SQS_QUEUE_URL,
+                QueueUrl: this.configService.get('AWS_SQS_QUEUE_URL'),
                 MessageBody: JSON.stringify(message),
                 DelaySeconds: Math.round(Math.random() * 10),
             }),
@@ -214,7 +221,10 @@ export const TASK_PUBLISHER = 'TaskPublisher';
 
 @Global()
 @Module({
-    imports: [DiscoveryModule],
+    imports: [
+        DiscoveryModule,
+        ConfigModule,
+    ],
     providers: [
         SQSConsumerService,
         SNSMessagePublisher,

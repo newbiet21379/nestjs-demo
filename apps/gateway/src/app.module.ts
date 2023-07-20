@@ -17,14 +17,13 @@ import {IntrospectAndCompose} from "@apollo/gateway";
               name: 'users',
               url:'localhost:4001/graphql'
             },
-            // {
-            //   name: 'orders',
-            //   url: 'localhost:4002/graphql'
-            // }
+            {
+              name: 'orders',
+              url: 'localhost:4002/graphql'
+            }
           ]
         })
       }
-
     }),
   ],
 })

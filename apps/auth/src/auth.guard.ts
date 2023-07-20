@@ -8,10 +8,10 @@ import {PASSWORD_GENERATOR, PasswordGeneratorPort} from "./password.generator.mo
 import {USER_REPOSITORY} from "./user.di-tokens";
 import {UserRepositoryPort} from "./database/user.repository.port";
 import {JwtService} from "@nestjs/jwt";
-import {Config} from "@libs/common/configs/dotenv.config";
 import { Request } from 'express';
 import {Reflector} from "@nestjs/core";
 import {IS_PUBLIC_KEY} from "@libs/common/api/global.routes";
+import {ConfigService} from "@nestjs/config";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -19,7 +19,8 @@ export class AuthGuard implements CanActivate {
         @Inject(PASSWORD_GENERATOR) protected readonly passwordGenerator: PasswordGeneratorPort,
         @Inject(USER_REPOSITORY) protected readonly userRepo: UserRepositoryPort,
         @Inject() protected readonly jwtService: JwtService,
-        @Inject() protected readonly reflector: Reflector,) {}
+        @Inject() protected readonly reflector: Reflector,
+        @Inject() protected readonly configService: ConfigService) {}
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
             context.getHandler(),
@@ -42,7 +43,7 @@ export class AuthGuard implements CanActivate {
             request['user'] = await this.jwtService.verifyAsync(
                 token,
                 {
-                    secret: Config.JWT_CONSTANT
+                    secret: this.configService.get('JWT_CONSTANT')
                 }
             );
         } catch {
