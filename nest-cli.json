@@ -10,7 +10,10 @@
       {
         "name": "@nestjs/graphql",
         "options": {
-          "typeFileNameSuffix": [".input.ts", ".args.ts"],
+          "typeFileNameSuffix": [
+            ".input.ts",
+            ".args.ts"
+          ],
           "introspectComments": true
         }
       }
@@ -26,13 +29,13 @@
         "tsConfigPath": "apps/gateway/tsconfig.app.json"
       }
     },
-    "service-user": {
+    "user": {
       "type": "application",
-      "root": "apps/service-user",
+      "root": "apps/user",
       "entryFile": "main",
-      "sourceRoot": "apps/service-user/src",
+      "sourceRoot": "apps/user/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/service-user/tsconfig.app.json"
+        "tsConfigPath": "apps/user/tsconfig.app.json"
       }
     },
     "common": {
@@ -44,13 +47,49 @@
         "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
     },
-    "service-orders": {
+    "orders": {
       "type": "application",
-      "root": "apps/service-orders",
+      "root": "apps/orders",
       "entryFile": "main",
-      "sourceRoot": "apps/service-orders/src",
+      "sourceRoot": "apps/orders/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/service-orders/tsconfig.app.json"
+        "tsConfigPath": "apps/orders/tsconfig.app.json"
+      }
+    },
+    "auth": {
+      "type": "application",
+      "root": "apps/auth",
+      "entryFile": "main",
+      "sourceRoot": "apps/auth/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/auth/tsconfig.app.json"
+      }
+    },
+    "notification": {
+      "type": "application",
+      "root": "apps/notification",
+      "entryFile": "main",
+      "sourceRoot": "apps/notification/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/notification/tsconfig.app.json"
+      }
+    },
+    "auth": {
+      "type": "application",
+      "root": "apps/auth",
+      "entryFile": "main",
+      "sourceRoot": "apps/auth/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/auth/tsconfig.app.json"
+      }
+    },
+    "notification": {
+      "type": "application",
+      "root": "apps/notification",
+      "entryFile": "main",
+      "sourceRoot": "apps/notification/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/notification/tsconfig.app.json"
       }
     }
   }

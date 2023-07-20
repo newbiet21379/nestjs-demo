@@ -19,7 +19,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        node-version: [16.x, 18.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -29,8 +29,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm install
       - run: npm run lint
-      - run: npm run build service-user
-      - run: npm run build service-account
+      - run: npm run build user
+      - run: npm run build orders
+      - run: npm run build auth
+      - run: npm run build notification
       - run: npm run build gateway
       - run: npm test -- --passWithNoTests
         env:
