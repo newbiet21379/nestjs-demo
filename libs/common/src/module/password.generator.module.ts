@@ -1,11 +1,11 @@
 import {Module} from '@nestjs/common';
 import {pbkdf2Sync} from 'crypto';
 
-export interface PasswordGenerator {
+export interface PasswordGeneratorPort {
     generateKey: (secret: string) => string;
 }
 
-class PasswordGeneratorImplement implements PasswordGenerator {
+class PasswordGenerator implements PasswordGeneratorPort {
     generateKey(secret: string): string {
         return pbkdf2Sync(secret, 'salt', 100000, 256, 'sha512').toString();
     }
@@ -17,7 +17,7 @@ export const PASSWORD_GENERATOR = 'PasswordGenerator';
     providers: [
         {
             provide: PASSWORD_GENERATOR,
-            useClass: PasswordGeneratorImplement,
+            useClass: PasswordGenerator,
         },
     ],
     exports: [PASSWORD_GENERATOR],
