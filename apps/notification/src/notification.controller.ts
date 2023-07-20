@@ -1,5 +1,4 @@
 import {Controller, Inject} from '@nestjs/common';
-import { NotificationService } from './notification.service';
 import {
   AccountClosed,
   AccountOpened, AccountPasswordUpdated,
@@ -10,8 +9,10 @@ import {SendNotificationCommand} from "./commands/send-email/send-notification.c
 
 @Controller()
 export class NotificationController {
-  @Inject() private readonly commandBus: CommandBus;
-  constructor(private readonly notificationService: NotificationService) {}
+
+  constructor(
+      @Inject() private readonly commandBus: CommandBus,
+      ) {}
 
   @MessageHandler(Topic.ACCOUNT_OPENED)
   async sendNewAccountEmail(message: AccountOpened): Promise<void> {

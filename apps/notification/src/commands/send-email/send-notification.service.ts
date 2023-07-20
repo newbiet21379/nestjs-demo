@@ -8,14 +8,14 @@ import {NotificationEntity} from "../../domain/notification.entity";
 import {Inject} from "@nestjs/common";
 import {NotificationRepositoryPort} from "../../database/notification.repository.port";
 import {EmailAdapter} from "../../adapter/email.adapter";
-import {InjectionToken} from "../../notification.di-tokens";
+import {EMAIL_ADAPTER, NOTIFICATION_REPOSITORY} from "../../notification.di-tokens";
 
 @CommandHandler(SendNotificationCommand)
 export class CreateUserService implements ICommandHandler {
     constructor(
-        @Inject(InjectionToken.NOTIFICATION_REPOSITORY)
+        @Inject(NOTIFICATION_REPOSITORY)
         protected readonly notificationRepo: NotificationRepositoryPort,
-        @Inject(InjectionToken.EMAIL_ADAPTER)
+        @Inject(EMAIL_ADAPTER)
         protected readonly emailAdapter: EmailAdapter
     ) {}
 

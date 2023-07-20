@@ -6,10 +6,10 @@ import {Injectable, Logger} from "@nestjs/common";
 import {InjectPool} from "nestjs-slonik/dist";
 import {DatabasePool, sql} from "slonik";
 import {EventEmitter2} from "@nestjs/event-emitter";
-import {NotificationMapper} from "../../notification.mapper";
+import {NotificationMapper} from "../notification.mapper";
 import {FindNotificationRequestDto} from "../queries/find-notification/find-notification.request.dto";
 
-export const messageSchema = z.object({
+export const notificationSchema = z.object({
     id: z.string().uuid(),
     created_at: z.preprocess((val: any) => new Date(val), z.date()),
     updated_at: z.preprocess((val: any) => new Date(val), z.date()),
@@ -19,7 +19,7 @@ export const messageSchema = z.object({
     subject: z.string().min(1)
 })
 
-export type MessageModel = z.TypeOf<typeof messageSchema>;
+export type NotificationModel = z.TypeOf<typeof notificationSchema>;
 
 @Injectable()
 export class NotificationRepository
@@ -27,7 +27,7 @@ export class NotificationRepository
     implements NotificationRepositoryPort {
     protected tableName = 'message';
 
-    protected schema = messageSchema;
+    protected schema = notificationSchema;
 
     constructor(
         @InjectPool()
@@ -39,7 +39,7 @@ export class NotificationRepository
     }
 
     async find(options: FindNotificationRequestDto): Promise<NotificationEntity[]> {
-        const notifications = await this.pool.query(sql.type(messageSchema)`
+        const notifications = await this.pool.query(sql.type(notificationSchema)`
                 SELECT * FROM "message" 
                 ${options.accountId? sql`WHERE account_id = ${options.accountId}`: true} AND
                 ${options.to? sql`WHERE to = ${options.to}`: true}

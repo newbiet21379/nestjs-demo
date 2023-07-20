@@ -3,14 +3,16 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { SlonikModule } from 'nestjs-slonik';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { RequestContextModule } from 'nestjs-request-context';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import {APP_GUARD, APP_INTERCEPTOR} from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import {ContextInterceptor} from "@libs/common/application/context/ContextInterceptor";
 import {ExceptionInterceptor} from "@libs/common/application/interceptors/exception.interceptor";
 import {UserModule} from "./user.module";
 import {ApolloDriver, ApolloDriverConfig} from "@nestjs/apollo";
 import {ConfigModule} from "@nestjs/config";
-import {postgresConnectionUri} from "@libs/common/configs/dotenv.config";
+import {Config} from "@libs/common/configs/dotenv.config";
+import {JwtModule} from "@nestjs/jwt";
+import {AuthGuard} from "./auth.guard";
 
 const interceptors = [
   {
@@ -21,6 +23,10 @@ const interceptors = [
     provide: APP_INTERCEPTOR,
     useClass: ExceptionInterceptor,
   },
+  {
+    provide: APP_GUARD,
+    useClass: AuthGuard
+  }
 ];
 
 @Module({
@@ -28,7 +34,7 @@ const interceptors = [
     EventEmitterModule.forRoot(),
     RequestContextModule,
     SlonikModule.forRoot({
-      connectionUri: postgresConnectionUri
+      connectionUri: `postgres://${Config.DATABASE_USER}:${Config.DATABASE_PASSWORD}@${Config.DATABASE_HOST}/${Config.DATABASE_NAME}`
     }),
     CqrsModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -36,6 +42,11 @@ const interceptors = [
       autoSchemaFile: {
         federation: 2
       },
+    }),
+    JwtModule.register({
+      global: true,
+      secret: Config.JWT_CONSTANT,
+      signOptions: { expiresIn: '60s' },
     }),
     UserModule,
     ConfigModule.forRoot({

@@ -10,6 +10,7 @@ export const routesV1 = {
   user: {
     root: usersRoot,
     delete: `/${usersRoot}/:id`,
+    sign_in: `/${usersRoot}/sign_in`
   },
   orders: {
     root: ordersRoot,

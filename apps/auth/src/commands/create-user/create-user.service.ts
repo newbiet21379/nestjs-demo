@@ -10,7 +10,7 @@ import {UserAlreadyExistsError} from "../../domain/user.errors";
 import {UserEntity} from "../../domain/user.entity";
 import {Address} from "../../domain/value-objects/address.value-object";
 import {ConflictException} from "@libs/common/exceptions";
-import {PASSWORD_GENERATOR, PasswordGeneratorPort} from "@libs/common/module/password.generator.module";
+import {PASSWORD_GENERATOR, PasswordGeneratorPort} from "../../password.generator.module";
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserService implements ICommandHandler {

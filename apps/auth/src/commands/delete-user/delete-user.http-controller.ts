@@ -12,7 +12,7 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import {routesV1} from "@libs/common/configs/app.routes";
 import {NotFoundException} from "@libs/common/exceptions";
 import {ApiErrorResponse} from "@libs/common/api/api-error.response";
-import {Auth} from "../../auth.guard";
+import {Public} from "@libs/common/api/global.routes";
 
 @Controller(routesV1.version)
 export class DeleteUserHttpController {
@@ -28,7 +28,6 @@ export class DeleteUserHttpController {
     description: NotFoundException.message,
     type: ApiErrorResponse,
   })
-  @Auth()
   @Delete(routesV1.user.delete)
   async deleteUser(@Param('id') id: string): Promise<void> {
     const command = new DeleteUserCommand({ userId: id });
